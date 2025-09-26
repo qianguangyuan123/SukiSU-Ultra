@@ -623,3 +623,16 @@ fun setUidMultiUserScan(enabled: Boolean): Boolean {
     val result = ShellUtils.fastCmdResult(shell, cmd)
     return result
 }
+
+fun getUidMultiUserScan(): Boolean {
+    val shell = getRootShell()
+
+    val cmd = "grep 'multi_user_scan=' /data/misc/user_uid/uid_scanner.conf | cut -d'=' -f2"
+    val result = ShellUtils.fastCmd(shell, cmd).trim()
+
+    return try {
+        result.toInt() == 1
+    } catch (e: NumberFormatException) {
+        false
+    }
+}

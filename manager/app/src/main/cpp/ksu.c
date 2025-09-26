@@ -48,6 +48,7 @@ extern const char* zako_file_verrcidx2str(uint8_t index);
 #define CMD_GET_SUSFS_FEATURE_STATUS 102
 #define CMD_DYNAMIC_MANAGER 103
 #define CMD_GET_MANAGERS 104
+#define CMD_THRONE_CTL 105
 
 #define DYNAMIC_MANAGER_OP_SET 0
 #define DYNAMIC_MANAGER_OP_GET 1
@@ -192,6 +193,25 @@ bool get_managers_list(struct manager_list_info* info) {
     }
 
     return ksuctl(CMD_GET_MANAGERS, info, NULL);
+}
+
+bool throne_control(int operation, int* status) {
+    if (status == NULL) {
+        return false;
+    }
+
+    switch (operation) {
+        case 0: // THRONE_OP_DISABLE
+            return ksuctl(CMD_THRONE_CTL, (void*)((size_t)0), status);
+        case 1: // THRONE_OP_ENABLE
+            return ksuctl(CMD_THRONE_CTL, (void*)((size_t)1), status);
+        case 2: // THRONE_OP_GET_STATUS
+            return ksuctl(CMD_THRONE_CTL, (void*)((size_t)2), status);
+        case 3: // THRONE_OP_EXIT
+            return ksuctl(CMD_THRONE_CTL, (void*)((size_t)3), status);
+        default:
+            return false;
+    }
 }
 
 bool verify_module_signature(const char* input) {

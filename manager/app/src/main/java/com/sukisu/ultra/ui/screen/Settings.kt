@@ -49,6 +49,7 @@ import com.sukisu.ultra.ui.theme.getCardElevation
 import com.sukisu.ultra.ui.util.LocalSnackbarHost
 import com.sukisu.ultra.ui.util.getBugreportFile
 import com.sukisu.ultra.ui.util.getRootShell
+import com.sukisu.ultra.ui.util.getUidMultiUserScan
 import com.sukisu.ultra.ui.util.setUidAutoScan
 import com.sukisu.ultra.ui.util.setUidMultiUserScan
 import com.topjohnwu.superuser.ShellUtils
@@ -189,6 +190,17 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                             var uidMultiUserScanEnabled by rememberSaveable {
                                 mutableStateOf(prefs.getBoolean("uid_multi_user_scan", false))
                             }
+
+                            LaunchedEffect(Unit) {
+                              try {
+                                  uidAutoScanEnabled = Natives.throneGetStatus()
+                                  uidMultiUserScanEnabled = getUidMultiUserScan()
+                                    prefs.edit { putBoolean("uid_auto_scan", uidAutoScanEnabled) }
+                                    prefs.edit { putBoolean("uid_multi_user_scan", uidMultiUserScanEnabled) }
+                                } catch (_: Exception) {
+                                }
+                            }
+
                             // 用户态扫描应用列表开关
                             SwitchItem(
                                 icon = Icons.Filled.Scanner,
@@ -198,6 +210,12 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                                 onCheckedChange = { enabled ->
                                     scope.launch {
                                         try {
+                                            if (enabled) {
+                                                Natives.throneEnable()
+                                            } else {
+                                                Natives.throneDisable()
+                                            }
+
                                             if (setUidAutoScan(enabled)) {
                                                 uidAutoScanEnabled = enabled
                                                 prefs.edit { putBoolean("uid_auto_scan", enabled) }
@@ -275,6 +293,10 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                                             if (result == ConfirmResult.Confirmed) {
                                                 val cleanResult = cleanRuntimeEnvironment()
                                                 if (cleanResult) {
+                                                    Natives.throneDisable()
+
+                                                    Natives.throneExit()
+
                                                     uidAutoScanEnabled = false
                                                     prefs.edit { putBoolean("uid_auto_scan", false) }
 

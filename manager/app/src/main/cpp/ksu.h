@@ -137,4 +137,6 @@ bool get_managers_list(struct manager_list_info* info);
 
 bool verify_module_signature(const char* input);
 
+bool throne_control(int operation, int* status);
+
 #endif //KERNELSU_KSU_H

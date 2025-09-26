@@ -138,6 +138,31 @@ object Natives {
     // 模块签名验证
     external fun verifyModuleSignature(modulePath: String): Boolean
 
+    // Throne Communication Control Functions
+    /**
+     * Enable throne communication
+     * @return true if successful, false otherwise
+     */
+    external fun throneEnable(): Boolean
+
+    /**
+     * Disable throne communication
+     * @return true if successful, false otherwise
+     */
+    external fun throneDisable(): Boolean
+
+    /**
+     * Get current throne communication status
+     * @return true if enabled, false if disabled
+     */
+    external fun throneGetStatus(): Boolean
+
+    /**
+     * Exit/cleanup throne communication
+     * @return true if successful, false otherwise
+     */
+    external fun throneExit(): Boolean
+
     private const val NON_ROOT_DEFAULT_PROFILE_KEY = "$"
     private const val NOBODY_UID = 9999
 

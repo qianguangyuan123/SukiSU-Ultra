@@ -432,3 +432,31 @@ NativeBridge(verifyModuleSignature, jboolean, jstring modulePath) {
     return false;
 #endif
 }
+
+NativeBridgeNP(throneEnable, jboolean) {
+    int status = 0;
+    bool result = throne_control(1, &status); // THRONE_OP_ENABLE
+    LogDebug("throneEnable: result=%d, status=%d", result, status);
+    return result && (status == 1);
+}
+
+NativeBridgeNP(throneDisable, jboolean) {
+    int status = 0;
+    bool result = throne_control(0, &status); // THRONE_OP_DISABLE
+    LogDebug("throneDisable: result=%d, status=%d", result, status);
+    return result;
+}
+
+NativeBridgeNP(throneGetStatus, jboolean) {
+    int status = 0;
+    bool result = throne_control(2, &status); // THRONE_OP_GET_STATUS
+    LogDebug("throneGetStatus: result=%d, status=%d", result, status);
+    return result && (status == 1);
+}
+
+NativeBridgeNP(throneExit, jboolean) {
+    int status = 0;
+    bool result = throne_control(3, &status); // THRONE_OP_EXIT
+    LogDebug("throneExit: result=%d, status=%d", result, status);
+    return result;
+}
